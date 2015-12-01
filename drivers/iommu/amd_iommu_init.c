@@ -2504,7 +2504,8 @@ static int __init early_amd_iommu_init(void)
 		disable_iommus();
 
 	if (amd_iommu_irq_remap)
-		amd_iommu_irq_remap = check_ioapic_information();
+/*	if (amd_iommu_irq_remap)
+		amd_iommu_irq_remap = check_ioapic_information();*/
 
 	if (amd_iommu_irq_remap) {
 		/*
