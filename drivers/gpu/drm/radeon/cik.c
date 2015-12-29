@@ -126,7 +126,6 @@ MODULE_FIRMWARE("radeon/LIVERPOOL_ce.bin");
 MODULE_FIRMWARE("radeon/LIVERPOOL_mec.bin");
 MODULE_FIRMWARE("radeon/LIVERPOOL_rlc.bin");
 MODULE_FIRMWARE("radeon/LIVERPOOL_sdma.bin");
-
 extern int r600_ih_ring_alloc(struct radeon_device *rdev);
 extern void r600_ih_ring_fini(struct radeon_device *rdev);
 extern void evergreen_mc_stop(struct radeon_device *rdev, struct evergreen_mc_save *save);
@@ -8201,7 +8200,7 @@ restart_ih:
 		return IRQ_NONE;
 
 	rptr = rdev->ih.rptr;
-	DRM_DEBUG("cik_irq_process start: rptr %d, wptr %d\n", rptr, wptr);
+	//DRM_DEBUG("cik_irq_process start: rptr %d, wptr %d\n", rptr, wptr);
 
 	/* Order reading of wptr vs. reading of IH ring data */
 	rmb();
