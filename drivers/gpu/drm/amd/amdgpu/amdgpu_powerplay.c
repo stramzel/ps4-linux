@@ -97,6 +97,7 @@ static int amdgpu_pp_early_init(void *handle)
 	case CHIP_KABINI:
 	case CHIP_MULLINS:
 	case CHIP_KAVERI:
+	case CHIP_LIVERPOOL:
 		amd_pp->ip_funcs = &kv_dpm_ip_funcs;
 		break;
 #endif
