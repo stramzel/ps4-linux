@@ -462,6 +462,7 @@ static int dce_virtual_hw_init(void *handle)
 	case CHIP_KAVERI:
 	case CHIP_KABINI:
 	case CHIP_MULLINS:
+	case CHIP_LIVERPOOL:
 		dce_v8_0_disable_dce(adev);
 		break;
 #endif
