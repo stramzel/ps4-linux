@@ -54,6 +54,7 @@ extern "C" {
 #define DRM_AMDGPU_VM			0x13
 #define DRM_AMDGPU_FENCE_TO_HANDLE	0x14
 #define DRM_AMDGPU_SCHED		0x15
+#define DRM_AMDGPU_GEM_FIND_BO	        0x16
 
 #define DRM_IOCTL_AMDGPU_GEM_CREATE	DRM_IOWR(DRM_COMMAND_BASE + DRM_AMDGPU_GEM_CREATE, union drm_amdgpu_gem_create)
 #define DRM_IOCTL_AMDGPU_GEM_MMAP	DRM_IOWR(DRM_COMMAND_BASE + DRM_AMDGPU_GEM_MMAP, union drm_amdgpu_gem_mmap)
@@ -71,6 +72,8 @@ extern "C" {
 #define DRM_IOCTL_AMDGPU_VM		DRM_IOWR(DRM_COMMAND_BASE + DRM_AMDGPU_VM, union drm_amdgpu_vm)
 #define DRM_IOCTL_AMDGPU_FENCE_TO_HANDLE DRM_IOWR(DRM_COMMAND_BASE + DRM_AMDGPU_FENCE_TO_HANDLE, union drm_amdgpu_fence_to_handle)
 #define DRM_IOCTL_AMDGPU_SCHED		DRM_IOW(DRM_COMMAND_BASE + DRM_AMDGPU_SCHED, union drm_amdgpu_sched)
+#define DRM_IOCTL_AMDGPU_GEM_FIND_BO	DRM_IOWR(DRM_COMMAND_BASE + DRM_AMDGPU_GEM_FIND_BO, struct drm_amdgpu_gem_find_bo)
+
 
 /**
  * DOC: memory domains
@@ -305,6 +308,17 @@ struct drm_amdgpu_gem_userptr {
 };
 
 /* SI-CI-VI: */
+
+struct drm_amdgpu_gem_find_bo {
+	uint64_t		addr;
+	uint64_t		size;
+	uint32_t		flags;
+	/* Resulting GEM handle */
+	uint32_t		handle;
+	/* offset in bo */
+	uint64_t		offset;
+};
+
 /* same meaning as the GB_TILE_MODE and GL_MACRO_TILE_MODE fields */
 #define AMDGPU_TILING_ARRAY_MODE_SHIFT			0
 #define AMDGPU_TILING_ARRAY_MODE_MASK			0xf
