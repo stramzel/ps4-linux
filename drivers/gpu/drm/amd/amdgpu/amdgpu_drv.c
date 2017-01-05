@@ -88,6 +88,7 @@ int amdgpu_hw_i2c = 0;
 int amdgpu_pcie_gen2 = -1;
 int amdgpu_msi = -1;
 int amdgpu_lockup_timeout = 10000;
+int amdgpu_abort_on_lockup = 0;
 int amdgpu_dpm = -1;
 int amdgpu_fw_load_type = -1;
 int amdgpu_aspm = -1;
@@ -219,6 +220,9 @@ module_param_named(msi, amdgpu_msi, int, 0444);
  */
 MODULE_PARM_DESC(lockup_timeout, "GPU lockup timeout in ms > 0 (default 10000)");
 module_param_named(lockup_timeout, amdgpu_lockup_timeout, int, 0444);
+
+MODULE_PARM_DESC(abort_on_lockup, "Abort GPU jobs on after a GPU lockup (1 = enable, 0 = disable (default))");
+module_param_named(abort_on_lockup, amdgpu_abort_on_lockup, int, 0644);
 
 /**
  * DOC: dpm (int)
