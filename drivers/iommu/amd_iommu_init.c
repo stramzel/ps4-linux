@@ -2526,8 +2526,7 @@ static int __init early_amd_iommu_init(void)
 	if (!is_kdump_kernel() || amd_iommu_disabled)
 		disable_iommus();
 
-	if (amd_iommu_irq_remap)
-/*	if (amd_iommu_irq_remap)
+	/*if (amd_iommu_irq_remap)
 		amd_iommu_irq_remap = check_ioapic_information();*/
 
 	if (amd_iommu_irq_remap) {
