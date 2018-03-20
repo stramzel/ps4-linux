@@ -19,7 +19,7 @@
 #include "drm/drm_edid.h"
 #include "drm/drmP.h"
 
-#include "radeon_mode.h"
+#include "amdgpu_mode.h"
 #include "ObjectID.h"
 
 #define CMD_READ	1, 1
@@ -132,7 +132,7 @@ struct mn86471a_bridge {
 };
 
 /* this should really be taken care of by the connector, but that is currently
- * contained/owned by radeon_connector so just use a global for now */
+ * contained/owned by amdgpu_connector so just use a global for now */
 static struct mn86471a_bridge g_bridge = {
 	.mutex = __MUTEX_INITIALIZER(g_bridge.mutex)
 };
@@ -209,6 +209,7 @@ static void cq_writereg(struct i2c_cmdqueue *q, u16 addr, u8 data)
 #if 0
 static void cq_write(struct i2c_cmdqueue *q, u16 addr, u8 *data, u8 count)
 {
+	
 	cq_cmd(q, CMD_WRITE);
 	*q->p++ = count;
 	*q->p++ = addr >> 8;
@@ -282,6 +283,7 @@ static void mn86471a_pre_enable(struct drm_bridge *bridge)
 {
 	struct mn86471a_bridge *mn_bridge = bridge_to_mn86471a(bridge);
 	DRM_DEBUG_KMS("mn86471a_pre_enable\n");
+	
 
 	mutex_lock(&mn_bridge->mutex);
 	cq_init(&mn_bridge->cq, 4);
@@ -351,6 +353,7 @@ static void mn86471a_enable(struct drm_bridge *bridge)
 {
 	struct mn86471a_bridge *mn_bridge = bridge_to_mn86471a(bridge);
 	u8 dp[3];
+	
 
 	if (!mn_bridge->mode) {
 		DRM_ERROR("mode not available\n");
@@ -364,6 +367,8 @@ static void mn86471a_enable(struct drm_bridge *bridge)
 	mutex_lock(&mn_bridge->mutex);
 	cq_init(&mn_bridge->cq, 4);
 	/* Read DisplayPort status (?) */
+	
+	
 	cq_read(&mn_bridge->cq, 0x76e1, 3);
 	if (cq_exec(&mn_bridge->cq) < 11) {
 		mutex_unlock(&mn_bridge->mutex);
@@ -484,6 +489,7 @@ static const struct drm_display_mode mode_1080p = {
 
 int mn86471a_get_modes(struct drm_connector *connector)
 {
+	
 	struct drm_device *dev = connector->dev;
 	struct drm_display_mode *newmode;
 	DRM_DEBUG_KMS("mn86471a_get_modes\n");
@@ -505,12 +511,13 @@ enum drm_connector_status mn86471a_detect(struct drm_connector *connector,
 {
 	struct mn86471a_bridge *mn_bridge = &g_bridge;
 	u8 reg;
+    
+    
+	struct amdgpu_connector *amdgpu_connector = to_amdgpu_connector(connector);
+	struct amdgpu_connector_atom_dig *amdgpu_dig_connector = amdgpu_connector->con_priv;
 
-	struct radeon_connector *radeon_connector = to_radeon_connector(connector);
-	struct radeon_connector_atom_dig *radeon_dig_connector = radeon_connector->con_priv;
-
-	radeon_dig_connector->dp_sink_type = CONNECTOR_OBJECT_ID_DISPLAYPORT;
-	radeon_dp_getdpcd(radeon_connector);
+	amdgpu_dig_connector->dp_sink_type = CONNECTOR_OBJECT_ID_DISPLAYPORT;
+	amdgpu_atombios_dp_get_dpcd(amdgpu_connector);
 
 	mutex_lock(&mn_bridge->mutex);
 	cq_init(&mn_bridge->cq, 4);
@@ -534,6 +541,7 @@ enum drm_connector_status mn86471a_detect(struct drm_connector *connector,
 int mn86471a_mode_valid(struct drm_connector *connector,
 				  struct drm_display_mode *mode)
 {
+	
 	int vic = drm_match_cea_mode(mode);
 
 	/* Allow anything that we can match up to a VIC (CEA modes) */
