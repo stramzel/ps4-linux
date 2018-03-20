@@ -39,6 +39,10 @@
 
 #include "amdgpu_amdkfd.h"
 
+#ifdef CONFIG_X86_PS4
+#include <asm/ps4.h>
+#endif
+
 /*
  * KMS wrapper.
  * - 3.0.0 - initial driver
@@ -840,6 +844,16 @@ static int amdgpu_pci_probe(struct pci_dev *pdev,
 	ret = amdgpu_amdkfd_init();
 	if (ret == -EPROBE_DEFER)
 		return ret;
+       
+#ifdef CONFIG_X86_PS4
+	/* On the PS4 (Liverpool graphics) we have a hard dependency on the
+	 * Aeolia driver to set up the HDMI encoder which is connected to it,
+	 * so defer probe until it is ready. This test passes if this isn't
+	 * a PS4 (returns -ENODEV).
+	 */
+	if (apcie_status() == 0)
+		return -EPROBE_DEFER;
+#endif
 
 	/* Get rid of things like offb */
 	ret = amdgpu_kick_out_firmware_fb(pdev);
