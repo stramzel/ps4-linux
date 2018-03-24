@@ -92,7 +92,6 @@ MODULE_FIRMWARE("radeon/liverpool_ce.bin");
 MODULE_FIRMWARE("radeon/liverpool_rlc.bin");
 MODULE_FIRMWARE("radeon/liverpool_mec.bin");
 MODULE_FIRMWARE("radeon/liverpool_mec2.bin");
-
 static const struct amdgpu_gds_reg_offset amdgpu_gds_reg_offset[] =
 {
 	{mmGDS_VMID0_BASE, mmGDS_VMID0_SIZE, mmGDS_GWS_VMID0, mmGDS_OA_VMID0},
@@ -5131,6 +5130,7 @@ static int gfx_v7_0_sw_init(void *handle)
 	case CHIP_HAWAII:
 	case CHIP_KABINI:
 	case CHIP_MULLINS:
+	case CHIP_LIVERPOOL:
 	default:
 		adev->gfx.mec.num_mec = 1;
 		break;
