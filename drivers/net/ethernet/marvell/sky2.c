@@ -171,7 +171,7 @@ static int gm_phy_write(struct sky2_hw *hw, unsigned port, u16 reg, u16 val)
 
 	gma_write16(hw, port, GM_SMI_DATA, val);
 	gma_write16(hw, port, GM_SMI_CTRL,
-		    GM_SMI_CT_PHY_AD(hw->phy_addr) | GM_SMI_CT_REG_AD(reg));
+		    GM_SMI_CT_PHY_AD(PHY_ADDR_MARV) | GM_SMI_CT_REG_AD(reg));
 
 	for (i = 0; i < PHY_RETRIES; i++) {
 		u16 ctrl = gma_read16(hw, port, GM_SMI_CTRL);
@@ -196,7 +196,7 @@ static int __gm_phy_read(struct sky2_hw *hw, unsigned port, u16 reg, u16 *val)
 {
 	int i;
 
-	gma_write16(hw, port, GM_SMI_CTRL, GM_SMI_CT_PHY_AD(hw->phy_addr)
+	gma_write16(hw, port, GM_SMI_CTRL, GM_SMI_CT_PHY_AD(PHY_ADDR_MARV)
 		    | GM_SMI_CT_REG_AD(reg) | GM_SMI_CT_OP_RD);
 
 	for (i = 0; i < PHY_RETRIES; i++) {
@@ -1395,7 +1395,7 @@ static int sky2_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 
 	switch (cmd) {
 	case SIOCGMIIPHY:
-		data->phy_id = hw->phy_addr;
+		data->phy_id = PHY_ADDR_MARV;
 
 		/* fallthru */
 	case SIOCGMIIREG: {
@@ -3629,7 +3629,6 @@ static int sky2_get_link_ksettings(struct net_device *dev,
 
 	supported = sky2_supported_modes(hw);
 	cmd->base.phy_address = PHY_ADDR_MARV;
-	cmd->transceiver = XCVR_INTERNAL;
 	if (sky2_is_copper(hw)) {
 		cmd->base.port = PORT_TP;
 		cmd->base.speed = sky2->speed;
@@ -4878,7 +4877,6 @@ static struct net_device *sky2_init_netdev(struct sky2_hw *hw, unsigned port,
 
 	dev->features |= dev->hw_features;
 
-<<<<<<< HEAD
 	/* MTU range: 60 - 1500 or 9000 */
 	dev->min_mtu = ETH_ZLEN;
 	if (hw->chip_id == CHIP_ID_YUKON_FE ||
@@ -4886,29 +4884,27 @@ static struct net_device *sky2_init_netdev(struct sky2_hw *hw, unsigned port,
 		dev->max_mtu = ETH_DATA_LEN;
 	else
 		dev->max_mtu = ETH_JUMBO_MTU;
-
+		
 #ifdef CONFIG_X86_PS4
 	if (hw->pdev->vendor == PCI_VENDOR_ID_SONY) {
 		aeolia_get_mac_address(hw, dev->dev_addr);
 	} else
 #endif
 	{
+
+
 	/* try to get mac address in the following order:
 	 * 1) from device tree data
 	 * 2) from internal registers set by bootloader
 	 */
-	/*
 	iap = of_get_mac_address(hw->pdev->dev.of_node);
 	if (iap)
 		memcpy(dev->dev_addr, iap, ETH_ALEN);
 	else
 		memcpy_fromio(dev->dev_addr, hw->regs + B2_MAC_1 + port * 8,
 			      ETH_ALEN);
-	*/
-	printk("FIXME: Using static eth0 mac addr\n");
-	memcpy(dev->dev_addr, mac_address, ETH_ALEN);
 	}
-
+	
 	/* if the address is invalid, use a random value */
 	if (!is_valid_ether_addr(dev->dev_addr)) {
 		struct sockaddr sa = { AF_UNSPEC };
@@ -5026,7 +5022,6 @@ static int sky2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 	if (apcie_status() == 0)
 		return -EPROBE_DEFER;
 #endif
-
 	err = pci_enable_device(pdev);
 	if (err) {
 		dev_err(&pdev->dev, "cannot enable PCI device\n");
@@ -5061,7 +5056,7 @@ static int sky2_probe(struct pci_dev *pdev, const struct pci_device_id *ent)
 #ifdef CONFIG_X86_PS4
 	if (pdev->vendor == PCI_VENDOR_ID_SONY) {
 		if (pci_set_dma_mask(pdev, DMA_BIT_MASK(31)) < 0 ||
-		    pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(31) < 0)) {
+		    pci_set_consistent_dma_mask(pdev, DMA_BIT_MASK(31)) < 0) {
 			dev_err(&pdev->dev, "no usable DMA configuration\n");
 			goto err_out_free_regions;
 		}

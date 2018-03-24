@@ -168,7 +168,6 @@ module_param_named(lockup_timeout, amdgpu_lockup_timeout, int, 0444);
 
 MODULE_PARM_DESC(abort_on_lockup, "Abort GPU jobs on after a GPU lockup (1 = enable, 0 = disable (default))");
 module_param_named(abort_on_lockup, amdgpu_abort_on_lockup, int, 0644);
-
 MODULE_PARM_DESC(dpm, "DPM support (1 = enable, 0 = disable, -1 = auto)");
 module_param_named(dpm, amdgpu_dpm, int, 0444);
 
@@ -459,7 +458,8 @@ static const struct pci_device_id pciidlist[] = {
 	{0x1002, 0x985F, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_MULLINS|AMD_IS_MOBILITY|AMD_IS_APU},
 	/* liverpool */
 	{0x1002, 0x9920, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_LIVERPOOL|AMD_IS_APU},
-
+	{0x1002, 0x9923, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_LIVERPOOL|AMD_IS_APU},
+	{0x1002, 0x9924, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_LIVERPOOL|AMD_IS_APU},
 #endif
 	/* topaz */
 	{0x1002, 0x6900, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_TOPAZ},
@@ -586,7 +586,7 @@ static int amdgpu_pci_probe(struct pci_dev *pdev,
 	ret = amdgpu_kick_out_firmware_fb(pdev);
 	if (ret)
 		return ret;
-		
+	
 #ifdef CONFIG_X86_PS4
 	/* On the PS4 (Liverpool graphics) we have a hard dependency on the
 	 * Aeolia driver to set up the HDMI encoder which is connected to it,
