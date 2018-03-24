@@ -699,7 +699,8 @@ static const struct pci_device_id pciidlist[] = {
 	{0x1002, 0x985F, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_MULLINS|AMD_IS_MOBILITY|AMD_IS_APU},
 	/* liverpool */
 	{0x1002, 0x9920, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_LIVERPOOL|AMD_IS_APU},
-
+	{0x1002, 0x9923, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_LIVERPOOL|AMD_IS_APU},
+	{0x1002, 0x9924, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_LIVERPOOL|AMD_IS_APU},
 #endif
 	/* topaz */
 	{0x1002, 0x6900, PCI_ANY_ID, PCI_ANY_ID, 0, 0, CHIP_TOPAZ},
@@ -844,7 +845,7 @@ static int amdgpu_pci_probe(struct pci_dev *pdev,
 	ret = amdgpu_amdkfd_init();
 	if (ret == -EPROBE_DEFER)
 		return ret;
-       
+	
 #ifdef CONFIG_X86_PS4
 	/* On the PS4 (Liverpool graphics) we have a hard dependency on the
 	 * Aeolia driver to set up the HDMI encoder which is connected to it,

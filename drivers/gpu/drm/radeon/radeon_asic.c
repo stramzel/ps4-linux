@@ -2248,12 +2248,6 @@ static struct radeon_asic kv_asic = {
 		.dma_ring_index = R600_RING_TYPE_DMA_INDEX,
 		.copy = &cik_copy_dma,
 		.copy_ring_index = R600_RING_TYPE_DMA_INDEX,
-// 		.blit = &cik_copy_cpdma,
-// 		.blit_ring_index = RADEON_RING_TYPE_GFX_INDEX,
-// 		.dma = &cik_copy_cpdma,
-// 		.dma_ring_index = RADEON_RING_TYPE_GFX_INDEX,
-// 		.copy = &cik_copy_cpdma,
-// 		.copy_ring_index = RADEON_RING_TYPE_GFX_INDEX,
 	},
 	.surface = {
 		.set_reg = r600_set_surface_reg,

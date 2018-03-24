@@ -1387,6 +1387,7 @@ static int amdgpu_device_parse_gpu_info_fw(struct amdgpu_device *adev)
 	case CHIP_KAVERI:
 	case CHIP_KABINI:
 	case CHIP_MULLINS:
+	case CHIP_LIVERPOOL:
 #endif
 	case CHIP_VEGA20:
 	default:

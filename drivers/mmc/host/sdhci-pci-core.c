@@ -1564,20 +1564,8 @@ static const struct pci_device_id pci_ids[] = {
 	SDHCI_PCI_DEVICE(O2, SEABIRD0, o2),
 	SDHCI_PCI_DEVICE(O2, SEABIRD1, o2),
 #ifdef CONFIG_X86_PS4
-	{
-		.vendor		= PCI_VENDOR_ID_SONY,
-		.device		= PCI_DEVICE_ID_SONY_AEOLIA_SDHCI,
-		.subvendor	= PCI_ANY_ID,
-		.subdevice	= PCI_ANY_ID,
-		.driver_data	= (kernel_ulong_t)&sdhci_aeolia,
-	},
-	{
-		.vendor		= PCI_VENDOR_ID_SONY,
-		.device		= PCI_DEVICE_ID_SONY_BELIZE_SDHCI,
-		.subvendor	= PCI_ANY_ID,
-		.subdevice	= PCI_ANY_ID,
-		.driver_data	= (kernel_ulong_t)&sdhci_aeolia,
-	},
+	SDHCI_PCI_DEVICE(SONY, AEOLIA_SDHCI, aeolia),
+	SDHCI_PCI_DEVICE(SONY, BELIZE_SDHCI, aeolia),
 #endif
 	SDHCI_PCI_DEVICE(ARASAN, PHY_EMMC, arasan),
 	SDHCI_PCI_DEVICE(SYNOPSYS, DWC_MSHC, snps),
