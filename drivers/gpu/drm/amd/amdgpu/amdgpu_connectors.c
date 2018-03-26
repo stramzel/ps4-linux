@@ -1479,21 +1479,21 @@ static const struct drm_connector_funcs amdgpu_connector_dp_funcs = {
 };
 
 #ifdef CONFIG_X86_PS4
-int mn86471a_get_modes(struct drm_connector *connector);
-enum drm_connector_status mn86471a_detect(struct drm_connector *connector,
+int amdgpu_ps4_bridge_get_modes(struct drm_connector *connector);
+enum drm_connector_status amdgpu_ps4_bridge_detect(struct drm_connector *connector,
 					  bool force);
-int mn86471a_mode_valid(struct drm_connector *connector,
+int amdgpu_ps4_bridge_mode_valid(struct drm_connector *connector,
 			struct drm_display_mode *mode);
 
 static const struct drm_connector_helper_funcs amdgpu_ps4_dp_connector_helper_funcs = {
-	.get_modes = mn86471a_get_modes,
-	.mode_valid = mn86471a_mode_valid,
+	.get_modes = amdgpu_ps4_bridge_get_modes,
+	.mode_valid = amdgpu_ps4_bridge_mode_valid,
 	.best_encoder = amdgpu_connector_dvi_encoder,
 };
 
 static const struct drm_connector_funcs amdgpu_ps4_dp_connector_funcs = {
 	.dpms = drm_helper_connector_dpms,
-	.detect = mn86471a_detect,
+	.detect = amdgpu_ps4_bridge_detect,
 	.fill_modes = drm_helper_probe_single_connector_modes,
 	//.set_property = amdgpu_connector_set_property,
 	.destroy = amdgpu_connector_destroy,
