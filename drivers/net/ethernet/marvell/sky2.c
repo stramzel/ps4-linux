@@ -171,7 +171,7 @@ static int gm_phy_write(struct sky2_hw *hw, unsigned port, u16 reg, u16 val)
 
 	gma_write16(hw, port, GM_SMI_DATA, val);
 	gma_write16(hw, port, GM_SMI_CTRL,
-		    GM_SMI_CT_PHY_AD(PHY_ADDR_MARV) | GM_SMI_CT_REG_AD(reg));
+		    GM_SMI_CT_PHY_AD(hw->phy_addr) | GM_SMI_CT_REG_AD(reg));
 
 	for (i = 0; i < PHY_RETRIES; i++) {
 		u16 ctrl = gma_read16(hw, port, GM_SMI_CTRL);
@@ -196,7 +196,7 @@ static int __gm_phy_read(struct sky2_hw *hw, unsigned port, u16 reg, u16 *val)
 {
 	int i;
 
-	gma_write16(hw, port, GM_SMI_CTRL, GM_SMI_CT_PHY_AD(PHY_ADDR_MARV)
+	gma_write16(hw, port, GM_SMI_CTRL, GM_SMI_CT_PHY_AD(hw->phy_addr)
 		    | GM_SMI_CT_REG_AD(reg) | GM_SMI_CT_OP_RD);
 
 	for (i = 0; i < PHY_RETRIES; i++) {
@@ -1395,7 +1395,7 @@ static int sky2_ioctl(struct net_device *dev, struct ifreq *ifr, int cmd)
 
 	switch (cmd) {
 	case SIOCGMIIPHY:
-		data->phy_id = PHY_ADDR_MARV;
+		data->phy_id = hw->phy_addr;
 
 		/* fallthru */
 	case SIOCGMIIREG: {

@@ -32,7 +32,7 @@
 #include "atombios_encoders.h"
 
 #ifdef CONFIG_X86_PS4
-int mn86471a_bridge_register(struct drm_connector *connector,
+int amdgpu_ps4_bridge_register(struct drm_connector *connector,
 			     struct drm_encoder *encoder);
 
 static void amdgpu_maybe_add_bridge(struct drm_connector *connector,
@@ -42,7 +42,7 @@ static void amdgpu_maybe_add_bridge(struct drm_connector *connector,
 	struct amdgpu_device *adev = dev->dev_private;
 
 	if (adev->asic_type == CHIP_LIVERPOOL) {
-		mn86471a_bridge_register(connector, encoder);
+		amdgpu_ps4_bridge_register(connector, encoder);
 	} 
 }
 #endif
