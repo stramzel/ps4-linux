@@ -393,7 +393,7 @@ void amdgpu_irq_dispatch(struct amdgpu_device *adev,
 		}
 
 		r = src->funcs->process(adev, src, entry);
-		if (r)
+		//if (r)
 			//DRM_ERROR("error processing interrupt (%d)\n", r);
 	}
 }
