@@ -582,8 +582,8 @@ int amdgpu_ps4_bridge_get_modes(struct drm_connector *connector)
 	newmode = drm_mode_duplicate(dev, &mode_1080p);
 	drm_mode_probed_add(connector, newmode);
 
-	newmode = drm_mode_duplicate(dev, &mode_720p);
-	drm_mode_probed_add(connector, newmode);
+	//newmode = drm_mode_duplicate(dev, &mode_720p);
+	//drm_mode_probed_add(connector, newmode);
 	//newmode = drm_mode_duplicate(dev, &mode_480p);
 	//drm_mode_probed_add(connector, newmode);
 
@@ -629,7 +629,7 @@ int amdgpu_ps4_bridge_mode_valid(struct drm_connector *connector,
 	int vic = drm_match_cea_mode(mode);
 
 	/* Allow anything that we can match up to a VIC (CEA modes) */
-	if (!vic || (vic != 16 && vic != 4)) {
+	if (!vic || (vic != 16 /*&& vic != 4*/)) {
 		return MODE_BAD;
 	}
 
