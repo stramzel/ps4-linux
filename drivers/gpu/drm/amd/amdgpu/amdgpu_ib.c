@@ -323,7 +323,7 @@ int amdgpu_ib_ring_tests(struct amdgpu_device *adev)
 	unsigned i;
 	int r, ret = 0;
 
-	for (i = 0; i < AMDGPU_MAX_RINGS; ++i) {
+	for (i = 0; i < 1; ++i) {
 		struct amdgpu_ring *ring = adev->rings[i];
 
 		if (!ring || !ring->ready)
