@@ -2213,7 +2213,7 @@ static int dce_v8_0_cursor_move_locked(struct drm_crtc *crtc,
 	/* avivo cursor are offset into the total surface */
 	x += crtc->x;
 	y += crtc->y;
-	DRM_DEBUG("x %d y %d c->x %d c->y %d\n", x, y, crtc->x, crtc->y);
+	//DRM_DEBUG("x %d y %d c->x %d c->y %d\n", x, y, crtc->x, crtc->y);
 
 	if (x < 0) {
 		xorigin = min(-x, amdgpu_crtc->max_cursor_width - 1);
@@ -3040,7 +3040,7 @@ static int dce_v8_0_crtc_irq(struct amdgpu_device *adev,
 		if (amdgpu_irq_enabled(adev, source, irq_type)) {
 			drm_handle_vblank(adev->ddev, crtc);
 		}
-		DRM_DEBUG("IH: D%d vblank\n", crtc + 1);
+		//DRM_DEBUG("IH: D%d vblank\n", crtc + 1);
 		break;
 	case 1: /* vline */
 		if (disp_int & interrupt_status_offsets[crtc].vline)
@@ -3048,10 +3048,10 @@ static int dce_v8_0_crtc_irq(struct amdgpu_device *adev,
 		else
 			DRM_DEBUG("IH: IH event w/o asserted irq bit?\n");
 
-		DRM_DEBUG("IH: D%d vline\n", crtc + 1);
+		//DRM_DEBUG("IH: D%d vline\n", crtc + 1);
 		break;
 	default:
-		DRM_DEBUG("Unhandled interrupt: %d %d\n", entry->src_id, entry->src_data[0]);
+		//DRM_DEBUG("Unhandled interrupt: %d %d\n", entry->src_id, entry->src_data[0]);
 		break;
 	}
 
