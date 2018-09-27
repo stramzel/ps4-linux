@@ -37,11 +37,11 @@ bool apcie_initialized;
  * The RTC is part of the Aeolia PCI device and will be implemented there as
  * an RTC class device; stub these out.
  */
-static void dummy_get_wallclock(struct timespec *now)
+static void dummy_get_wallclock(struct timespec64 *now)
 {
 	now->tv_sec = now->tv_nsec = 0;
 }
-static int dummy_set_wallclock(const struct timespec *now)
+static int dummy_set_wallclock(const struct timespec64 *now)
 {
 	return -ENODEV;
 }

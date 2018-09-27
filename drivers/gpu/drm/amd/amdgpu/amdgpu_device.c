@@ -3353,7 +3353,10 @@ int amdgpu_device_gpu_recover(struct amdgpu_device *adev,
 		 * after above amdgpu_reset accomplished
 		 */
 		if ((!job || job->base.sched == &ring->sched) && !r)
-			drm_sched_job_recovery(&ring->sched);
+			if (amdgpu_abort_on_lockup)
+				drm_sched_job_abort(&ring->sched);
+			else
+				drm_sched_job_recovery(&ring->sched);
 
 		kthread_unpark(ring->sched.thread);
 	}

@@ -587,7 +587,7 @@ int amdgpu_ps4_bridge_get_modes(struct drm_connector *connector)
 	//newmode = drm_mode_duplicate(dev, &mode_480p);
 	//drm_mode_probed_add(connector, newmode);
 
-	drm_mode_connector_update_edid_property(connector, NULL);
+	drm_connector_update_edid_property(connector, NULL);
 
 	return 0;
 }

@@ -64,8 +64,8 @@ MODULE_FIRMWARE("amdgpu/kabini_sdma.bin");
 MODULE_FIRMWARE("amdgpu/kabini_sdma1.bin");
 MODULE_FIRMWARE("amdgpu/mullins_sdma.bin");
 MODULE_FIRMWARE("amdgpu/mullins_sdma1.bin");
-MODULE_FIRMWARE("radeon/liverpool_sdma.bin");
-MODULE_FIRMWARE("radeon/liverpool_sdma1.bin");
+MODULE_FIRMWARE("amdgpu/liverpool_sdma.bin");
+MODULE_FIRMWARE("amdgpu/liverpool_sdma1.bin");
 
 u32 amdgpu_cik_gpu_check_soft_reset(struct amdgpu_device *adev);
 

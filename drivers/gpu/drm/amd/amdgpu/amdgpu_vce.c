@@ -45,7 +45,7 @@
 #define FIRMWARE_KAVERI	"amdgpu/kaveri_vce.bin"
 #define FIRMWARE_HAWAII	"amdgpu/hawaii_vce.bin"
 #define FIRMWARE_MULLINS	"amdgpu/mullins_vce.bin"
-#define FIRMWARE_LIVERPOOL	"radeon/liverpool_vce.bin"
+#define FIRMWARE_LIVERPOOL	"amdgpu/liverpool_vce.bin"
 #endif
 #define FIRMWARE_TONGA		"amdgpu/tonga_vce.bin"
 #define FIRMWARE_CARRIZO	"amdgpu/carrizo_vce.bin"

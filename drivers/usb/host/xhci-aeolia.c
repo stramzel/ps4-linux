@@ -42,7 +42,7 @@ static void xhci_aeolia_quirks(struct device *dev, struct xhci_hcd *xhci)
 	 * Do not try to enable MSIs, we provide the MSIs ourselves
 	 * Do not touch DMA mask, we need a custom one
 	 */
-	xhci->quirks |= XHCI_PLAT | XHCI_PLAT_DMA;
+	xhci->quirks |= XHCI_PLAT | XHCI_HW_LPM_DISABLE;
 }
 
 /* called during probe() after chip reset completes */
@@ -179,7 +179,7 @@ static int xhci_aeolia_probe(struct pci_dev *dev, const struct pci_device_id *id
 		if (retval)
 			goto remove_hcds;
 	}
-	
+
 	return 0;
 
 remove_hcds:
@@ -200,10 +200,10 @@ static void xhci_aeolia_remove(struct pci_dev *dev)
 
 	for (idx = 0; idx < NR_DEVICES; idx++)
 		#ifdef BELIZE_HACK
-		if (idx != 1)
-		#endif
-			xhci_aeolia_remove_one(dev, idx);
-	
+ 		if (idx != 1)
+ 		#endif
+ 		xhci_aeolia_remove_one(dev, idx);
+
 	apcie_free_irqs(dev->irq, axhci->nr_irqs);
 	kfree(axhci);
 	pci_disable_device(dev);
@@ -224,7 +224,7 @@ static int xhci_aeolia_suspend(struct device *dev)
 	struct aeolia_xhci *axhci = dev_get_drvdata(dev);
 	struct xhci_hcd	*xhci;
 	int retval;
-	
+
 	for (idx = 0; idx < NR_DEVICES; idx++) {
 		#ifdef BELIZE_HACK
 		if (idx == 1) continue;

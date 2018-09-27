@@ -397,6 +397,9 @@ static int gmc_v7_0_mc_init(struct amdgpu_device *adev)
 			adev->gmc.gart_size = 256ULL << 20;
 			break;
 #ifdef CONFIG_DRM_AMDGPU_CIK
+		case CHIP_LIVERPOOL:
+			adev->gmc.gart_size = 2048ULL << 20;
+			break;
 		case CHIP_BONAIRE: /* UVD, VCE do not support GPUVM */
 		case CHIP_HAWAII:  /* UVD, VCE do not support GPUVM */
 		case CHIP_KAVERI:  /* UVD, VCE do not support GPUVM */
@@ -664,7 +667,7 @@ static int gmc_v7_0_gart_enable(struct amdgpu_device *adev)
 	/* set vm size, must be a multiple of 4 */
 	WREG32(mmVM_CONTEXT1_PAGE_TABLE_START_ADDR, 0);
 	WREG32(mmVM_CONTEXT1_PAGE_TABLE_END_ADDR, adev->vm_manager.max_pfn - 1);
-	for (i = 1; i < 16; i++) {
+	for (i = 1; i < 8; i++) {
 		if (i < 8)
 			WREG32(mmVM_CONTEXT0_PAGE_TABLE_BASE_ADDR + i,
 			       adev->gart.table_addr >> 12);
@@ -1065,7 +1068,7 @@ static int gmc_v7_0_sw_init(void *handle)
 	 * amdgpu graphics/compute will use VMIDs 1-7
 	 * amdkfd will use VMIDs 8-15
 	 */
-	adev->vm_manager.id_mgr[0].num_ids = AMDGPU_NUM_OF_VMIDS;
+	adev->vm_manager.id_mgr[0].num_ids = 7;
 	amdgpu_vm_manager_init(adev);
 
 	/* base offset of vram pages */

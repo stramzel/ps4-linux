@@ -712,6 +712,22 @@ void drm_sched_job_recovery(struct drm_gpu_scheduler *sched)
 }
 EXPORT_SYMBOL(drm_sched_job_recovery);
 
+void drm_sched_job_abort(struct drm_gpu_scheduler *sched)
+{
+	struct drm_sched_job *s_job, *tmp;
+
+	spin_lock(&sched->job_list_lock);
+	list_for_each_entry_safe(s_job, tmp, &sched->ring_mirror_list, node) {
+		struct drm_sched_fence *s_fence = s_job->s_fence;
+		spin_unlock(&sched->job_list_lock);
+		atomic_inc(&sched->hw_rq_count);
+		drm_sched_process_job(NULL, &s_fence->cb);
+		spin_lock(&sched->job_list_lock);
+	}
+	spin_unlock(&sched->job_list_lock);
+}
+EXPORT_SYMBOL(drm_sched_job_abort);
+
 /**
  * drm_sched_job_init - init a scheduler job
  *

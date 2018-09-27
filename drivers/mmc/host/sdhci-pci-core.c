@@ -31,6 +31,7 @@
 #include <linux/acpi.h>
 
 #include "cqhci.h"
+
 #ifdef CONFIG_X86_PS4
 #include <asm/ps4.h>
 #endif

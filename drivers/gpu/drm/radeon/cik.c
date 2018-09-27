@@ -6247,7 +6247,7 @@ int cik_vm_init(struct radeon_device *rdev)
 	 * VMID 0 is reserved for System
 	 * radeon graphics/compute will use VMIDs 1-15
 	 */
-	rdev->vm_manager.nvm = 16;
+	rdev->vm_manager.nvm = 7;
 	/* base offset of vram pages */
 	if (rdev->flags & RADEON_IS_IGP) {
 		u64 tmp = RREG32(MC_VM_FB_OFFSET);

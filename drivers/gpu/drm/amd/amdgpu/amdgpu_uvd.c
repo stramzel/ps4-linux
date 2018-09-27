@@ -58,7 +58,7 @@
 #define FIRMWARE_KAVERI	"amdgpu/kaveri_uvd.bin"
 #define FIRMWARE_HAWAII	"amdgpu/hawaii_uvd.bin"
 #define FIRMWARE_MULLINS	"amdgpu/mullins_uvd.bin"
-#define FIRMWARE_LIVERPOOL	"radeon/liverpool_uvd.bin"
+#define FIRMWARE_LIVERPOOL	"amdgpu/liverpool_uvd.bin"
 #endif
 #define FIRMWARE_TONGA		"amdgpu/tonga_uvd.bin"
 #define FIRMWARE_CARRIZO	"amdgpu/carrizo_uvd.bin"
