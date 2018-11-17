@@ -5896,7 +5896,7 @@ static void gfx_v7_0_get_cu_info(struct amdgpu_device *adev)
 	unsigned disable_masks[4 * 2];
 	u32 ao_cu_num;
 
-	if ((adev->flags & AMD_IS_APU) && adev->flags != CHIP_LIVERPOOL)
+	if ((adev->flags & AMD_IS_APU) && adev->asic_type != CHIP_LIVERPOOL)
 		ao_cu_num = 2;
 	else
 		ao_cu_num = adev->gfx.config.max_cu_per_sh;
