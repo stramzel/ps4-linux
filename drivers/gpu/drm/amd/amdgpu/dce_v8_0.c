@@ -390,12 +390,12 @@ static int dce_v8_0_get_num_crtc(struct amdgpu_device *adev)
 	case CHIP_HAWAII:
 		num_crtc = 6;
 		break;
+	case CHIP_LIVERPOOL:
 	case CHIP_KAVERI:
 		num_crtc = 4;
 		break;
 	case CHIP_KABINI:
 	case CHIP_MULLINS:
-	case CHIP_LIVERPOOL:
 		num_crtc = 2;
 		break;
 	default:
@@ -1398,7 +1398,7 @@ static int dce_v8_0_audio_init(struct amdgpu_device *adev)
 		/* disable audio.  it will be set up later */
 		/* XXX remove once we switch to ip funcs */
 		/* Liverpool pin 2 is S/PDIF and should always be available */
-		if (adev->asic_type == CHIP_LIVERPOOL && i == 2)
+		if (adev->asic_type == CHIP_LIVERPOOL)
 			dce_v8_0_audio_enable(adev, &adev->mode_info.audio.pin[i], true);
 		else
 			dce_v8_0_audio_enable(adev, &adev->mode_info.audio.pin[i], false);
@@ -2623,6 +2623,7 @@ static int dce_v8_0_early_init(void *handle)
 		adev->mode_info.num_dig = 6;
 		break;
 	case CHIP_KAVERI:
+	case CHIP_LIVERPOOL:
 		adev->mode_info.num_hpd = 6;
 		adev->mode_info.num_dig = 7;
 		break;
@@ -2631,10 +2632,7 @@ static int dce_v8_0_early_init(void *handle)
 		adev->mode_info.num_hpd = 6;
 		adev->mode_info.num_dig = 6; /* ? */
 		break;
-	case CHIP_LIVERPOOL:
-		adev->mode_info.num_hpd = 3; /* ? */
-		adev->mode_info.num_dig = 3; /* ? */
-		break;
+
 	default:
 		/* FIXME: not supported yet */
 		return -EINVAL;
@@ -2746,7 +2744,7 @@ static int dce_v8_0_hw_init(void *handle)
 	dce_v8_0_hpd_init(adev);
 
 	for (i = 0; i < adev->mode_info.audio.num_pins; i++) {
-		if (adev->asic_type == CHIP_LIVERPOOL && i == 2)
+		if (adev->asic_type == CHIP_LIVERPOOL)
 			dce_v8_0_audio_enable(adev, &adev->mode_info.audio.pin[i], true);
 		else
 			dce_v8_0_audio_enable(adev, &adev->mode_info.audio.pin[i], false);

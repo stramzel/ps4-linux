@@ -20,6 +20,7 @@
 #include "drm/drmP.h"
 
 #include "amdgpu_mode.h"
+#include "atombios_dp.h"
 #include "ObjectID.h"
 
 #define CMD_READ	1, 1
@@ -95,8 +96,6 @@
 # define HDCPEN_ENC_EN 0x03
 # define HDCPEN_ENC_DIS 0x05
 
-
-#define PCI_VENDOR_ID_AMD 0x1002
 #define PCI_DEVICE_ID_CUH_11XX 0x9920
 #define PCI_DEVICE_ID_CUH_12XX 0x9922
 #define PCI_DEVICE_ID_CUH_2XXX 0x9923
@@ -234,7 +233,7 @@ static void cq_mask(struct i2c_cmdqueue *q, u16 addr, u8 value, u8 mask)
 	*q->p++ = mask;
 }
 
-#if 0
+#if 1
 static void cq_delay(struct i2c_cmdqueue *q, u16 time)
 {
 	cq_cmd(q, CMD_DELAY);
@@ -288,7 +287,7 @@ static void ps4_bridge_pre_enable(struct drm_bridge *bridge)
 {
 	struct ps4_bridge *mn_bridge = bridge_to_ps4_bridge(bridge);
 	DRM_DEBUG_KMS("ps4_bridge_pre_enable\n");
-
+	DRM_DEBUG("Enable ps4_bridge_pre_enable\n");
 	mutex_lock(&mn_bridge->mutex);
 	cq_init(&mn_bridge->cq, 4);
 
@@ -360,13 +359,13 @@ static void ps4_bridge_enable(struct drm_bridge *bridge)
 	struct drm_device *dev = connector->dev;
 	struct pci_dev *pdev = dev->pdev;
 	u8 dp[3];
-
+	DRM_DEBUG("Enable PS4_BRIDGE_ENABLE\n");
 	if (!mn_bridge->mode) {
 		DRM_ERROR("mode not available\n");
 		return;
 	}
 
-	if(pdev->vendor != PCI_VENDOR_ID_AMD) {
+	if(pdev->vendor != PCI_VENDOR_ID_ATI) {
 		DRM_ERROR("Invalid vendor: %04x", pdev->vendor);
 		return;
 	}
@@ -449,6 +448,48 @@ static void ps4_bridge_enable(struct drm_bridge *bridge)
 		if (cq_exec(&mn_bridge->cq) < 0) {
 			DRM_ERROR("Failed to configure ps4-bridge (MN86471A) mode\n");
 		}
+		#if 1
+		// preinit
+		cq_init(&mn_bridge->cq, 4);
+		cq_writereg(&mn_bridge->cq,0x70b3, 0x00);
+		cq_writereg(&mn_bridge->cq,0x70b7, 0x0b);
+		cq_writereg(&mn_bridge->cq,0x70a8, 0x24);
+
+		cq_mask(&mn_bridge->cq,0x70b9, 0x06, 0x06);
+		cq_mask(&mn_bridge->cq,0x70b6, 0x02, 0x0f);
+		cq_mask(&mn_bridge->cq,0x70ba, 0x40, 0x70);
+		cq_mask(&mn_bridge->cq,0x70b2, 0x20, 0xe0);
+		cq_mask(&mn_bridge->cq,0x7257, 0x00, 0xff);
+		cq_mask(&mn_bridge->cq,0x70b0, 0x01, 0x21);
+		cq_mask(&mn_bridge->cq,0x70ba, 0x00, 0x88);
+		cq_mask(&mn_bridge->cq,0x70b9, 0x01, 0x01);
+		if (cq_exec(&mn_bridge->cq) < 0) {
+			DRM_ERROR("failed to run enable MN86471A hdmi audio seq. 0");
+		}
+
+		cq_init(&mn_bridge->cq, 4);
+		cq_writereg(&mn_bridge->cq,0x7ed8, 0x01);
+
+		cq_mask(&mn_bridge->cq,0x70b4, 0x00, 0x3e);
+		cq_mask(&mn_bridge->cq,0x70b5, 0x79, 0xff);
+		cq_mask(&mn_bridge->cq,0x70ab, 0x00, 0xff);
+		cq_mask(&mn_bridge->cq,0x70b6, 0x02, 0x3f);
+		cq_mask(&mn_bridge->cq,0x70b7, 0x0b, 0x0f);
+		cq_mask(&mn_bridge->cq,0x70ac, 0x00, 0xff);
+		cq_mask(&mn_bridge->cq,0x70bd, 0x00, 0xff);
+
+		cq_writereg(&mn_bridge->cq, 0x7204, 0x10);
+		cq_writereg(&mn_bridge->cq,0x7011, 0xa2);
+
+		cq_wait_set(&mn_bridge->cq,0x7096, 0x80);
+		cq_writereg(&mn_bridge->cq,0x7096, 0xff);
+
+		cq_mask(&mn_bridge->cq,0x7203, 0x10, 0x10);
+		cq_writereg(&mn_bridge->cq,0x70b1, 0xc0);
+		if (cq_exec(&mn_bridge->cq) < 0) {
+			DRM_ERROR("failed to run enable hdmi MN86471A audio seq. 1");
+		}
+		#endif
 		mutex_unlock(&mn_bridge->mutex);
 	}
 	else
@@ -467,8 +508,10 @@ static void ps4_bridge_enable(struct drm_bridge *bridge)
 
 		cq_mask(&mn_bridge->cq, 0x1e00, 0x00, 0x21);
 		cq_mask(&mn_bridge->cq, 0x1e02, 0x00, 0x70);
-
+		// 03 08 01 01 00  2c 01 00
+		cq_delay(&mn_bridge->cq, 0x012c);
 		cq_writereg(&mn_bridge->cq, 0x6020, 0x00);
+		cq_delay(&mn_bridge->cq, 0x0032);
 		cq_writereg(&mn_bridge->cq, 0x7402, 0x1c);
 		cq_writereg(&mn_bridge->cq, 0x6020, 0x04);
 		cq_writereg(&mn_bridge->cq, TSYSCTRL, TSYSCTRL_HDMI);
@@ -511,6 +554,7 @@ static void ps4_bridge_enable(struct drm_bridge *bridge)
 		cq_wait_set(&mn_bridge->cq, 0x10f6, 0x80);
 		cq_mask(&mn_bridge->cq, 0x7226, 0x00, 0x80);
 		cq_mask(&mn_bridge->cq, 0x7228, 0x00, 0xFF);
+		cq_delay(&mn_bridge->cq, 0x012c);
 		cq_writereg(&mn_bridge->cq, 0x7204, 0x40);
 		cq_wait_clear(&mn_bridge->cq, 0x7204, 0x40);
 		cq_writereg(&mn_bridge->cq, 0x7a8b, 0x05);
@@ -522,6 +566,47 @@ static void ps4_bridge_enable(struct drm_bridge *bridge)
 		if (cq_exec(&mn_bridge->cq) < 0) {
 			DRM_ERROR("Failed to configure ps4-bridge (MN864729) mode\n");
 		}
+		#if 1
+		// AUDIO preinit
+		cq_init(&mn_bridge->cq, 4);
+		cq_writereg(&mn_bridge->cq,0x70aa, 0x00);
+		cq_writereg(&mn_bridge->cq,0x70af, 0x07);
+		cq_writereg(&mn_bridge->cq,0x70a9, 0x5a);
+
+		cq_mask(&mn_bridge->cq,0x70af, 0x06, 0x06);
+		cq_mask(&mn_bridge->cq,0x70af, 0x02, 0x0f);
+		cq_mask(&mn_bridge->cq,0x70b3, 0x02, 0x0f);
+		cq_mask(&mn_bridge->cq,0x70ae, 0x80, 0xe0);
+		cq_mask(&mn_bridge->cq,0x70ae, 0x01, 0x07);
+		cq_mask(&mn_bridge->cq,0x70ac, 0x01, 0x21);
+		cq_mask(&mn_bridge->cq,0x70ab, 0x80, 0x88);
+		cq_mask(&mn_bridge->cq,0x70a9, 0x01, 0x01);
+		if (cq_exec(&mn_bridge->cq) < 0) {
+				DRM_ERROR("failed to run enable hdmi audio seq. 0");
+		}
+
+		cq_init(&mn_bridge->cq, 4);
+		cq_writereg(&mn_bridge->cq,0x70b0, 0x01);
+		cq_mask(&mn_bridge->cq,0x70b0, 0x00, 0xff);
+		cq_mask(&mn_bridge->cq,0x70b1, 0x79, 0xff);
+		cq_mask(&mn_bridge->cq,0x70b2, 0x00, 0xff);
+		cq_mask(&mn_bridge->cq,0x70b3, 0x02, 0xff);
+		cq_mask(&mn_bridge->cq,0x70b4, 0x0b, 0x0f);
+		cq_mask(&mn_bridge->cq,0x70b5, 0x00, 0xff);
+		cq_mask(&mn_bridge->cq,0x70b6, 0x00, 0xff);
+		cq_writereg(&mn_bridge->cq,0x10f6, 0xff);
+		cq_writereg(&mn_bridge->cq,0x7011, 0xa2);
+		cq_wait_set(&mn_bridge->cq,0x10f6, 0xa2);
+		cq_mask(&mn_bridge->cq,0x7267, 0x00, 0xff);
+		cq_writereg(&mn_bridge->cq,0x7204, 0x10);
+		cq_wait_clear(&mn_bridge->cq,0x7204, 0x10);
+		cq_writereg(&mn_bridge->cq,0x10f6, 0xff);
+		cq_mask(&mn_bridge->cq,0x7203, 0x10, 0x10);
+		cq_writereg(&mn_bridge->cq,0x70a8, 0xc0);
+		if (cq_exec(&mn_bridge->cq) < 0) {
+				DRM_ERROR("failed to run enable hdmi audio seq. 1");
+		}
+		#endif
 		mutex_unlock(&mn_bridge->mutex);
 	}
 
@@ -629,7 +714,7 @@ int amdgpu_ps4_bridge_mode_valid(struct drm_connector *connector,
 	int vic = drm_match_cea_mode(mode);
 
 	/* Allow anything that we can match up to a VIC (CEA modes) */
-	if (!vic || (vic != 16 /*&& vic != 4*/)) {
+	if (!vic || (vic != 16 && vic != 4)) {
 		return MODE_BAD;
 	}
 
